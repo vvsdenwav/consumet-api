@@ -3,35 +3,29 @@ require('dotenv').config();
 import Fastify from 'fastify';
 import FastifyCors from '@fastify/cors';
 
-import books from './routes/books';
-import anime from './routes/anime';
-import manga from './routes/manga';
-import comics from './routes/comics';
-import lightnovels from './routes/light-novels';
 import movies from './routes/movies';
 import meta from './routes/meta';
 
 (async () => {
-  const PORT = Number(process.env.PORT);
+  const PORT = Number(process.env.PORT) || 3000;
   const fastify = Fastify({
     logger: true,
   });
+  
   await fastify.register(FastifyCors, {
     origin: '*',
     methods: 'GET',
   });
-  await fastify.register(books, { prefix: '/books' });
-  await fastify.register(anime, { prefix: '/anime' });
-  await fastify.register(manga, { prefix: '/manga' });
-  await fastify.register(comics, { prefix: '/comics' });
-  await fastify.register(lightnovels, { prefix: '/light-novels' });
+
+  // Only registering the routes needed for VEEU
   await fastify.register(movies, { prefix: '/movies' });
   await fastify.register(meta, { prefix: '/meta' });
 
   try {
     fastify.get('/', (_, rp) => {
-      rp.status(200).send('Welcome to consumet api! 🎉');
+      rp.status(200).send('Welcome to consumet api! 🎉 (VEEU Optimized)');
     });
+    
     fastify.get('*', (request, reply) => {
       reply.status(404).send({
         message: '',
